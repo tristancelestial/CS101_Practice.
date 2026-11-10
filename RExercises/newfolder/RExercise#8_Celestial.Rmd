@@ -1,0 +1,261 @@
+---
+title: "RExercise#8_Celestial"
+author: "tristancelestial"
+date: "2026-10-11"
+output: html_document
+---
+
+Introduction
+
+The functions sort(), order(), and rank() are used to arrange and organize data in R. Although they are related, they have different purposes.
+
+sort() arranges values in ascending or descending order.
+order() returns the positions of values based on their order.
+rank() assigns a ranking to each value.
+
+In this activity, we will use these functions to organize student scores, handle missing values, rearrange data frames, and determine rankings.
+
+Part A — Basic Operations
+Question #1
+Create a vector of student scores.
+```{r}
+scores <- c(
+  Ana = 78,
+  Ben = 92,
+  Cid = 85,
+  Dex = 92,
+  Eli = 67,
+  Fay = 88,
+  Gio = 74
+)
+
+print(scores)
+```
+
+
+Sort the scores in ascending order and descending order. What is the output?
+sort(scores)
+
+```{r}
+scores <- c(
+  Ana = 78,
+  Ben = 92,
+  Cid = 85,
+  Dex = 92,
+  Eli = 67,
+  Fay = 88,
+  Gio = 74
+)
+sort(scores, decreasing = TRUE)
+```
+
+
+
+> Answer: The ascending order arranges the scores from the lowest to the highest, while the descending order arranges them from the highest to the lowest.
+
+The ascending scores are 67, 74, 78, 85, 88, 92, and 92. The descending scores are 92, 92, 88, 85, 78, 74, and 67.
+
+Print your sorted result from sort-ascending. Check whether the names stayed attached to their correct values.
+
+```{r}
+sorted_scores <- sort(scores)
+
+print(sorted_scores)
+```
+> Answer: Yes, the names stay attached to their corresponding scores after sorting. For example, Ben and Dex still have scores of 92, while Eli has a score of 67. This is important because we need to identify the correct student for each score.
+
+Create another two vectors.
+```{r}
+subjects <- c("Science", "Math", "English", "Filipino", "PE")
+
+incomplete <- c(85, NA, 90, 70, NA, 95)
+
+print(subjects)
+print(incomplete)
+```
+
+Sort subjects alphabetically using sort().
+```{r}
+subjects <- c("Science", "Math", "English", "Filipino", "PE")
+sort(subjects)
+```
+
+
+
+> Answer: The subjects are arranged alphabetically in ascending order. The output is English, Filipino, Math, PE, and Science.
+
+Sort incomplete using sort(). Observe what happens to the NA values by default. Now sort it again using na.last = TRUE.
+
+```{r}
+incomplete <- c(85, NA, 90, 70, NA, 95)
+sort(incomplete)
+
+sort(incomplete, na.last = TRUE)
+```
+
+
+
+> Answer: By default, the sort() function removes the missing NA values from the result. When na.last = TRUE is used, the missing values are placed at the end of the sorted vector.
+
+Question #2
+
+When you sorted scores, did the names stay correctly attached to their original values? Explain why this matters: if you were sorting exam scores to find the top performer, what would go wrong if the names did NOT follow their values?
+
+> Answer: Yes, the names stayed attached to their correct scores after sorting. This matters because when arranging examination results, we need to make sure that every score belongs to the correct student. If the names do not follow their scores, we might identify the wrong student as the highest or lowest performer. Keeping the names attached helps maintain accurate information.
+
+Question #3
+
+By default, sort() silently removes NA values instead of showing them or throwing an error. Why might this default behavior be dangerous if you were reporting "the lowest score" in a dataset with missing data, without first checking for NA values?
+
+> Answer: Removing NA values automatically can be dangerous because it may hide the fact that some students have missing scores. If we report the lowest score without checking for missing values, we might think that all students have submitted their scores. This could lead to incomplete or misleading results. It is important to check missing values before making conclusions.
+
+Question #4
+
+Use order(scores) and print the result. Compare this output to the sort(scores) output. What is the difference?
+
+```{r}
+order(scores)
+
+sort(scores)
+```
+
+> Answer: The order(scores) function returns the position numbers of the scores arranged from lowest to highest. On the other hand, sort(scores) directly returns the scores in ascending order. The difference is that order() gives the positions, while sort() gives the arranged values.
+
+Use the result of order(scores) to index scores itself. Compare this to sort(scores). Do they have the same values?
+
+```{r}
+scores[order(scores)]
+
+sort(scores)
+
+```
+
+
+> Answer: Yes, both scores[order(scores)] and sort(scores) produce the same sorted values. This happens because order() identifies the positions of the values, and indexing uses those positions to arrange the original scores.
+
+Question #5
+
+Create a data frame from the given vectors.
+
+```{r}
+name <- c("Ana", "Ben", "Cid", "Dex", "Eli", "Fay", "Gio")
+
+score <- c(78, 92, 85, 92, 67, 88, 74)
+
+section <- c("A", "B", "A", "B", "A", "B", "A")
+
+students <- data.frame(name, score, section)
+
+students
+
+```
+> Answer: The output is a data frame containing seven students and three columns: name, score, and section. Each row represents one student and includes their examination score and section.
+
+Reorder the ENTIRE students data frame by score using students[order(students$score), ]. What is the output?
+
+```{r}
+students[order(students$score), ]
+
+```
+
+
+> Answer: The data frame is arranged according to the students' scores, starting from the lowest to the highest. The names and sections remain correctly matched with their corresponding scores.
+
+Reorder students by score in DESCENDING order.
+```{r}
+students[order(students$score, decreasing = TRUE), ]
+
+```
+
+> Answer: The data frame is arranged from the highest score to the lowest score. Ben and Dex appear first because they both received 92, followed by Fay, Cid, Ana, Gio, and Eli.
+
+Question #6
+
+sort(scores) and scores[order(scores)] produce the same final values, but they work completely differently under the hood.
+
+In your own words, explain what order(scores) actually returns and why that output is useless on its own unless you use it to index something.
+
+> Answer: The order(scores) function returns the position numbers of the scores based on their ascending order. It does not directly display the sorted scores. The result becomes useful when it is used to index the original vector or data frame because it rearranges the values according to their positions.
+
+Question #7
+
+Explain why sort() alone could NOT have been used to reorder the whole students data frame by score. Why is order() the correct tool whenever you need to keep multiple related columns lined up with each other?
+
+> Answer: The sort() function is designed to arrange values in a vector and does not properly rearrange an entire data frame while keeping all related columns together. If we want to arrange students according to their scores, their names and sections must also follow the same order. The order() function is the correct tool because it identifies the row positions based on the selected column and allows us to rearrange the entire data frame without separating the related information.
+
+Question #8
+Use rank(scores) and print the result.
+```{r}
+rank(scores)
+
+cbind(scores, rank(scores))
+
+```
+
+Ranking the output for Ben and Dex
+```{r}
+rank(scores)[c("Ben", "Dex")]
+```
+
+What rank did Ben and Dex receive?
+
+> Answer: Ben and Dex both received a rank of 6.5. They have the highest scores in the class, but because they have equal scores, R assigns them the average of the two ranking positions, which are 6 and 7.
+
+Ben and Dex both scored 92, the highest score in the class, but under the default rank() they did NOT both simply get rank "1" or rank "7" as a whole number. Explain exactly what value they received by default and why R computes it that way for tied values.
+
+> Answer: Ben and Dex both received a rank of 6.5 by default. R uses the average ranking method for tied values. Since both students have the same score of 92, they share the sixth and seventh positions. R calculates the average of these positions, resulting in 6.5 for both students.
+
+Question #8 — Sales Data Frame
+Create a data frame.
+```{r}
+sales <- data.frame(
+  employee = c("Rey", "Sam", "Tin", "Uma", "Val"),
+  units_sold = c(120, 145, 145, 98, 130)
+)
+
+sales
+
+```
+
+Add a colsales
+```{r}
+colsales <- data.frame(
+  employee = c("Rey", "Sam", "Tin", "Uma", "Val"),
+  units_sold = c(120, 145, 145, 98, 130)
+)
+
+sales
+```
+
+sales$rank that ranks employees by units_sold, with the TOP seller receiving rank 1.
+```{r}
+sales$rank <- rank(
+  -sales$units_sold,
+  ties.method = "average"
+)
+
+sales
+```
+
+
+
+> Answer: The rank column shows the employees' positions according to their sales. Sam and Tin both receive rank 1.5 because they have the same highest number of units sold. Val receives rank 3, Rey receives rank 4, and Uma receives rank 5.
+
+Reorder the entire sales data frame using order() so it is displayed from HIGHEST units_sold to LOWEST.
+```{r}
+sales[order(sales$units_sold, decreasing = TRUE), ]
+```
+
+
+
+> Answer: The sales data frame is displayed from the highest number of units sold to the lowest. Sam and Tin appear first because they both sold 145 units, followed by Val with 130 units, Rey with 120 units, and Uma with 98 units.
+
+Question #9
+
+In this challenge, you used rank() to determine standing and order() to determine display order. Could you have used order() alone to solve the entire problem (both awarding ranks AND reordering the table)? Explain what order() is missing that rank() provides, using your own words rather than repeating the definitions.
+
+> Answer: No, using order() alone would not completely solve the problem because it only provides the positions needed to arrange the data. It does not directly assign a ranking value to every employee. The rank() function is needed to determine each employee's standing, including handling employees with equal sales. Therefore, both functions are useful because they perform different tasks.
+
+Conclusion
+
+> Answer: In this activity, I learned how to use sort(), order(), and rank() in R. I learned that sort() arranges values, order() provides the positions needed to rearrange data, and rank() determines the ranking of values. I also learned how to handle missing values and organize data frames while keeping related information together. These functions are useful for analyzing data and presenting results accurately.

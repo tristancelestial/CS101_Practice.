@@ -1,0 +1,184 @@
+---
+title: "RExercise#6_Celestial"
+author: "tristancelestial"
+date: "2024-10-10"
+output: html_document
+---
+
+Part A — Creating Data Frames
+# TODO: Create three vectors of equal length (5 students):
+# name (character): "Ana", "Ben", "Cid", "Dex", "Eli"
+# age (numeric): 20, 21, 19, 22, 20
+# passed (logical): TRUE, TRUE, FALSE, TRUE, FALSE
+(Your answer here)
+```{r}
+name <- c("Ana","Ben","Cid","Dex","Eli")
+age <- c(20,21,19,22,20)
+passed <- c(TRUE,TRUE,FALSE,TRUE,FALSE)
+```
+
+
+# TODO: Combine name, age, and passed into a data frame called students
+# using data.frame(name = name, age = age, passed = passed)
+# Print students
+(Your answer here)
+```{r}
+name <- c("Ana","Ben","Cid","Dex","Eli")
+age <- c(20,21,19,22,20)
+passed <- c(TRUE,TRUE,FALSE,TRUE,FALSE)
+students <- data.frame(name = name, age = age, passed = passed)
+print(students)
+```
+# TODO: Check the type of the "name" column using typeof(students$name)
+# and class(students$name)
+(Your answer here)
+```{r}
+name <- c("Ana","Ben","Cid","Dex","Eli")
+age <- c(20,21,19,22,20)
+passed <- c(TRUE,TRUE,FALSE,TRUE,FALSE)
+typeof(students$name)
+class(students$name)
+```
+
+# TODO: Now create a SECOND data frame called courses directly, without
+# separate vectors first, using data.frame() with these columns:
+# course_code = c("IS101", "IS102", "IS103")
+# units = c(3, 3, 2)
+# instructor = c("Dr. P. Reyes", "Dr. R. Santos", "Dr. S. Cruz")
+(Your answer here)
+```{r}
+
+courses <- data.frame(
+  course_code = c("IS101", "IS102", "IS103"),
+  units = c(3, 3, 2),
+  instructor = c("Dr. P. Reyes", "Dr. R. Santos", "Dr. S. Cruz")
+)
+
+print(courses)
+```
+
+Question #1
+
+You created students two different ways in concept: first from separate vectors, then courses directly inline.
+Both approaches produce the same kind of object.
+In your own words, explain why data.frame() requires every column argument to have the same length, and what error you would expect if they didn’t.
+(Your answer here)
+
+> Answer: data.frame() needs all columns to have the same number of values so that the data will be properly organized in rows. If one column has fewer or more values than the others, R will show an error because the data lengths don't match.
+
+
+Question #2
+
+A data frame is often described as “a list of vectors of equal length.”
+Based on what you know about lists from a previous lab, explain why this description makes sense — specifically, why can each column hold a different data type while a single column cannot?
+(Your answer here)
+
+> Answer: A data frame can have different types of data in each column, like names, ages, and grades. But each column should contain the same type of data and have the same number of values.
+
+Part B — Subsetting Data Frames
+# Access the age column three different ways
+```{r}
+students$age
+students[["age"]]
+students["age"]
+```
+# Access the entire second row
+```{r}
+students[2, ]
+```
+# Access row 3, column "name"
+```{r}
+students[3, "name"]
+```
+# Return only students who passed
+```{r}
+students[students$passed == TRUE, ]
+```
+
+# Return students who passed AND are older than 19
+```{r}
+students[students$passed == TRUE & students$age > 19, ]
+```
+Question #3
+> Answer: students$age and students[["age"]] return a vector, while students["age"] returns a data frame. Single brackets keep the data frame structure, while double brackets extract the actual column.
+
+Question #4
+> Answer: The & operator checks if both conditions are TRUE: the student passed and is older than 19. If we use | (OR), only one condition needs to be TRUE for the student to be included.
+
+## Part C — Data Frame Properties
+
+r
+
+```r
+# Check the structure and data types of each column
+str(students)
+
+# Check the size of the data frame
+dim(students)
+nrow(students)
+ncol(students)
+
+# List the column names
+names(students)
+
+# Get summary statistics for each column
+summary(students)
+```
+
+### Question #5
+
+> Answer: R summarizes numeric columns by showing the minimum, maximum, mean, and median. For logical columns, it counts TRUE and FALSE values, while character columns show the length and type of data. A mean doesn't make sense for names because names are text, not numbers.
+
+### Question #6
+
+> Answer: str() is more useful when I want to see the structure and data types of a data frame. summary() is more useful when I want to see basic statistics and information about the data.
+
+## Part D — Data Frame Operations
+
+r
+
+```r
+# Add a new column called year_level
+students$year_level <- c(2, 3, 1, 4, 2)
+
+# Remove the passed column
+students$passed <- NULL
+
+# Sort students by age in ascending order
+students[order(students$age), ]
+
+# Sort students by age in descending order
+students[order(students$age, decreasing = TRUE), ]
+```
+
+### Question #7
+
+>Answer: No, I can no longer use students$passed == TRUE because I already removed the passed column. R will not find that column. This is why it is important to keep track of changes in a data frame.
+
+### Question #8
+
+> Answer: order() first finds the row positions based on age, from youngest to oldest. Then `students[order(students$age), ] uses those positions to rearrange the entire data frame. This means all columns follow the new row order, not just the age column.
+
+## Part E — Critical Thinking Challenge
+
+```r
+grades$average <- (grades$midterm + grades$final) / 2
+
+grades[grades$remarks == "Failed", c("name", "average")]
+```
+
+
+### Question #9
+
+> Answer: I would compare each student's midterm and final scores to see if their grades dropped or stayed low. I would also create a new column to calculate their average and sort the students by their scores. Then, I would compare their scores with their final remarks to see which factor seems to affect their results more.
+
+## Conclusion
+
+>Answer: A data frame is a table that organizes data into rows and columns. It is related to vectors because each column is a vector, and it is related to lists because it can contain different types of data. Each column must have the same number of values. Data frames are useful in R because they make it easier to organize, manage, and analyze real-world data.
+
+
+
+
+
+
+

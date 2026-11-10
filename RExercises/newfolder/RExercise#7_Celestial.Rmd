@@ -1,0 +1,208 @@
+---
+title: "RExercise#7_Celestial"
+author: "tristancelestial"
+date: "2026-10-11"
+output: html_document
+---
+
+# R Lab: Data Structures – Data Frames
+
+## Part A — Creating Data Frames
+
+### Question #1
+
+1. Check that all six vectors have the same length.
+
+Replace the sample values below with the actual values from Figure 1.
+
+```{r}
+Respondent <- 1:20
+
+Sex <- c() 
+FathersOccupation <- c()
+PersonsAtHome <- c()
+SiblingsAtSchool <- c()
+TypesOfHouses <- c()
+
+length(Respondent)
+length(Sex)
+length(FathersOccupation)
+length(PersonsAtHome)
+length(SiblingsAtSchool)
+length(TypesOfHouses)
+```
+
+Each vector should return 20.
+
+2. Combine all six vectors into a data frame.
+
+
+```{r}
+survey <- data.frame(
+  Respondent,
+  Sex,
+  FathersOccupation,
+  PersonsAtHome,
+  SiblingsAtSchool,
+  TypesOfHouses
+)
+
+survey
+```
+
+3. Describe the data. Get the structure or summary.
+
+```{r}
+str(survey)
+summary(survey)
+```
+
+> Answer: The survey data frame contains information from 20 respondents. It has six columns representing the respondent number, sex, father's occupation, number of persons at home, siblings attending school, and type of house. The structure shows the data types of each column, while the summary provides information such as the minimum, maximum, mean, and median values.
+
+4. Check the dimensions. How many rows and columns?
+
+```{r}
+dim(survey)
+nrow(survey)
+ncol(survey)
+```
+
+> Answer: The data frame has 20 rows and 6 columns. Each row represents one respondent, while each column represents a specific survey variable.
+
+5. Create factors for Sex, Father's Occupation, and Types of Houses.
+
+```{r}
+survey$Sex <- factor(
+  survey$Sex,
+  levels = c(1, 2),
+  labels = c("Male", "Female")
+)
+
+survey$FathersOccupation <- factor(
+  survey$FathersOccupation,
+  levels = c(1, 2, 3),
+  labels = c("Farmer", "Driver", "Others")
+)
+
+survey$TypesOfHouses <- factor(
+  survey$TypesOfHouses,
+  levels = c(1, 2, 3),
+  labels = c("Wood", "Semi-Concrete", "Concrete")
+)
+
+survey
+```
+
+6. Get the mean for all columns.
+
+Because some columns are categorical, calculate the means of the numeric variables before converting the categorical variables into factors.
+
+```{r}
+survey_numeric <- data.frame(
+  Respondent,
+  Sex,
+  FathersOccupation,
+  PersonsAtHome,
+  SiblingsAtSchool,
+  TypesOfHouses
+)
+
+sapply(survey_numeric, mean)
+```
+
+> Answer: The mean can be calculated for numeric variables such as PersonsAtHome and SiblingsAtSchool because they represent actual quantities. The mean of coded categorical variables such as Sex, Father's Occupation, and Types of Houses is not meaningful because their numbers represent labels rather than measurable quantities.
+
+7. Extract the first five rows and all columns.
+
+```{r}
+survey[1:5, ]
+```
+
+> Answer: The output displays the first five respondents and all six columns of the survey data frame. It allows us to examine the information recorded for the first five respondents.
+
+8. Select the variable TypesOfHouses and store it as types\_houses.
+
+```{r}
+types_houses <- survey$TypesOfHouses
+
+types_houses
+```
+
+> Answer: The `types_houses` variable contains the house types of all 20 respondents. It is extracted from the TypesOfHouses column of the survey data frame.
+
+9. Select all male respondents whose fathers are farmers.
+
+```{r}
+male_farmers <- subset(
+  survey,
+  Sex == "Male" & FathersOccupation == "Farmer"
+)
+
+male_farmers
+```
+
+> Answer: The output displays only the male respondents whose fathers work as farmers. The conditions ensure that both requirements are satisfied.
+
+10. Select all female respondents who have five or more siblings attending school.
+
+```{r}
+female_siblings <- subset(
+  survey,
+  Sex == "Female" & SiblingsAtSchool >= 5
+)
+
+female_siblings
+```
+
+> Answer: The output displays female respondents who have five or more siblings attending school. The condition filters the data according to sex and the number of siblings attending school.
+
+## Question #2
+
+Why is checking that all six vectors have the same length necessary?
+
+> Answer: Checking the length of all six vectors is necessary because each column represents information from the same 20 respondents. Every respondent must have a corresponding answer in each column. If the vectors have different lengths, the data may become inconsistent, and R may recycle values or produce warnings when creating the data frame.
+
+## Question #3
+
+Which columns are nominal data and which are actual counts?
+
+> Answer: The nominal data are Sex, Father's Occupation, and TypesOfHouses because their numbers represent categories or labels rather than actual quantities. The actual counts are PersonsAtHome and SiblingsAtSchool because they represent the number of people in a household and the number of siblings attending school. Treating Sex as a quantity to average would be misleading because the values 1 and 2 only represent Male and Female, not measurable amounts.
+
+## Question #4
+
+How could someone unfamiliar with the legend misinterpret Sex == 1?
+
+> Answer: Someone unfamiliar with the legend might think that the number 1 represents a measurement or ranking instead of the category Male. This illustrates the problem of using coded data without proper labels because the meaning of the numbers may not be clear. Converting numeric codes into meaningful labels helps prevent confusion and misinterpretation.
+
+## Question #5
+
+How many respondents are Male? Does the small sample size affect generalization?
+
+```{r}
+male_respondents <- subset(survey_numeric, Sex == 1)
+
+nrow(male_respondents)
+
+# Alternative method
+sum(survey_numeric$Sex == 1)
+```
+
+> Answer: The number of male respondents is the result returned by `nrow(male_respondents)`. Since the survey only includes 20 respondents, the sample size is relatively small. Therefore, the results may not accurately represent the entire population. More respondents would be needed to make stronger generalizations.
+
+## Question #6
+
+Why doesn't R automatically know that Sex and TypesOfHouses are categorical?
+
+> Answer: R does not automatically know that these columns represent categories because they are stored as numeric values. R interprets the numbers as quantities and calculates numerical summaries such as the minimum, maximum, and mean. This shows that the way data is stored is different from its actual meaning. We need to convert categorical variables into factors so R can recognize them as categories.
+
+## Question #7
+
+Compare the mean of PersonsAtHome to the mean of Sex. Which is meaningful?
+
+```{r}
+mean(survey_numeric$PersonsAtHome)
+
+mean(survey_numeric$Sex)
+```
+
+> Answer: The mean of PersonsAtHome is meaningful because it represents the average number of people living in the respondents' homes. However, the mean of Sex is not meaningful because the values 1 and 2 represent Male and Female rather than actual quantities. Therefore, the mean of PersonsAtHome is appropriate to report, while the mean of Sex should not be interpreted as a meaningful measurement.
